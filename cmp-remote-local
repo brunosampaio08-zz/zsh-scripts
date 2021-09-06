@@ -1,0 +1,25 @@
+#!/bin/zsh
+du -hd 1 | rclone lsd remote:BACKUP/UNIFESP | \
+awk '
+BEGIN {i=0;cloned=0;while("du -hd 1" | getline du_var){\
+	split(du_var, splitted_du_var, "\t");\
+	du_array[i][0]=splitted_du_var[1];\
+	du_array[i][1]=splitted_du_var[2];\
+	i+=1;
+	}\
+}\
+{\
+	for(j=0;j<i;j++){\
+		if("./"$5 == du_array[j][1]){\
+			delete du_array[j];\
+		}\
+	}\
+}\
+END {\
+	for(k in du_array){\
+		if(du_array[k][0] != ""){
+			printf("%s\t%s\n", du_array[k][0], du_array[k][1]);\
+		}
+	}\
+}\
+'

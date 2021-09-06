@@ -1,0 +1,79 @@
+#!/bin/zsh
+#This script should backup folder <path/to/folder> to remote:BACKUP/UNIFESP/path/to/folder using rclone
+
+#First option could be either "echo infos" or "-d <folder>"
+f_option=$1
+
+if [[ -z $f_option ]] then
+	printf "Wrong use! Please use unifesp-backup --help.\n"
+	return -2
+fi
+
+#Check if usage options, if note assume its folder path
+if [[ $f_option = "--ret-values" ]] then
+	printf " 0: Success;\n-1: Folder not found on source;\n-2: Non recognized command;\n-3: File not found on source;\n"
+	return 0
+fi
+
+if [[ $f_option = "--help" ]] then
+	printf "Usage:\nunifesp-backup -d <path/to/dir> [-f <path/to/file>] [--dry-run];"
+	printf "\n\tUploads <path/to/dir> to remote:BACKUP/UNIFESP/<path/to/dir>\n\tIf -f is used, uploads <path/to/file> to remote:<path/to/dir> instead.\n\t"
+	printf "If --dry-run is used, run rclone with dry run.\n"
+	printf "unifesp-backup --help;\n\tDisplays this message.\nunifesp-backup --ret-values;\n\tShows return values meaning for this script.\n"
+	return 0
+fi
+
+if [[ $f_option = "-d" ]] then
+	path_to_folder=$2
+	if [[ -z $path_to_folder ]] then
+		printf "Wrong use! Please use unifesp-backup --help.\n"
+		return -2
+	fi
+
+	if [[ ! -d $path_to_folder ]] then
+		printf "Path to folder doesn't exist!\n"
+		printf "Usage: --help\n"
+		return -1
+	fi
+
+	s_option=$3
+	if [[ -z $s_option ]] then
+		rclone copy -vP $path_to_folder remote:BACKUP/UNIFESP/$path_to_folder
+		return 0
+	else
+		if [[ $s_option = "-f" ]] then
+			path_to_file=$4
+			if [[ -z $path_to_file ]] then
+				printf "Wrong use! Please use unifesp-backup --help.\n"
+				return -2
+			fi
+			if [[ ! -f $path_to_file ]] then
+				printf "Path to file doesn't exist!\n"
+		      		printf "Usage: --help\n"
+		 		return -3
+			fi
+			t_option=$5
+			if [[ -z $t_option ]] then
+				rclone copy -vP $path_to_file remote:BACKUP/UNIFESP/$path_to_folder
+				return 0
+			fi
+			if [[ $t_option = "--dry-run" ]] then
+				rclone copy -vP --dry-run $path_to_file remote:BACKUP/UNIFESP/$path_to_folder
+				return 0
+			else
+				printf "Wrong use! Please use unifesp-backup --help.\n"
+				return -2
+			fi
+		fi
+		if [[ $s_option = "--dry-run" ]] then
+			rclone copy -vP --dry-run $path_to_folder remote:BACKUP/UNIFESP/$path_to_folder
+			return 0
+		else
+			printf "Wrong use! Please use unifesp-backup --help.\n"
+			return -2
+		fi
+	fi
+else
+	printf "Non recognized options. Please note that -d <path/to/folder> is mandatory. --help for more information."
+fi
+
