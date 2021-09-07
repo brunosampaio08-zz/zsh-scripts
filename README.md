@@ -1,5 +1,5 @@
 # Shell Scripts
-## Remote Repository to Hold Scripts I Have Found Useful (Tested in ZSH)
+#### Remote Repository to Hold Scripts I Have Found Useful (Tested in ZSH)
 
 cmp-remote-local
 - Compares curr directory with a remote dir
