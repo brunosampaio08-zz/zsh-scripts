@@ -31,9 +31,11 @@ if [[ $f_option = "-d" ]] then
 	fi
 
 	if [[ ! -d $path_to_folder ]] then
-		printf "Path to folder doesn't exist!\n"
-		printf "Usage: --help\n"
-		return -1
+		if [[ -z $3 ]] then
+			printf "Path to folder doesn't exist!\n"
+			printf "Usage: --help\n"
+			return -1
+		fi
 	fi
 
 	s_option=$3
@@ -47,7 +49,7 @@ if [[ $f_option = "-d" ]] then
 				printf "Wrong use! Please use unifesp-backup --help.\n"
 				return -2
 			fi
-			if [[ ! -f $path_to_file ]] then
+			if [[ ! -a $path_to_file ]] then
 				printf "Path to file doesn't exist!\n"
 		      		printf "Usage: --help\n"
 		 		return -3
