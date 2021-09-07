@@ -74,6 +74,6 @@ if [[ $f_option = "-d" ]] then
 		fi
 	fi
 else
-	printf "Non recognized options. Please note that -d <path/to/folder> is mandatory. --help for more information."
+	printf "Non recognized options. Please note that -d <path/to/folder> is mandatory. --help for more information.\n"
 fi
 
